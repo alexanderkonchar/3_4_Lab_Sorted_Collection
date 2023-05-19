@@ -27,7 +27,7 @@ public:
 
     virtual int size();
 
-    virtual Item get(int ndx);
+    virtual Item get(int ndx) const;
 
     virtual void add(Item e);
 
@@ -39,7 +39,11 @@ public:
 
     virtual void operator-(int num);
 
-    friend ostream &operator<<(ostream &out, const Collection<Item> &c);
+    friend ostream &operator
+    <<<>(
+    ostream &out,
+    const Collection<Item> &c
+    );
 
 protected:
     int capacity;
@@ -63,6 +67,7 @@ template<typename Item>
 Collection<Item>::Collection(int size) {
     capacity = size;
     curSize = 0;
+    elements = make_unique<Item[]>(capacity);
 }
 
 template<typename Item>
@@ -82,7 +87,7 @@ int Collection<Item>::size() {
 }
 
 template<typename Item>
-Item Collection<Item>::get(int ndx) {
+Item Collection<Item>::get(int ndx) const {
     return elements[ndx];
 }
 

@@ -1,74 +1,58 @@
 //
-// Created by Alex on 1/26/23.
+// Created by Alex on 4/27/23.
 //
 
 #ifndef INC_3_4_LAB_SORTED_COLLECTION_SORTEDCOLLECTION_H
 #define INC_3_4_LAB_SORTED_COLLECTION_SORTEDCOLLECTION_H
 
-#include <ostream>
 #include "Collection.h"
 
-template<typename Item>
-class SortedCollection : Collection<Item> {
+template<class Type>
+class SortedCollection : public Collection<Type> {
 public:
-    SortedCollection();
+    SortedCollection<Type>();
 
-    explicit SortedCollection(int size);
+    explicit SortedCollection<Type>(int size);
 
-    explicit SortedCollection(Collection<Item> &collection);
+    SortedCollection<Type>(SortedCollection<Type> &a);
 
-    void add(Item toAdd);
+    void add(Type e) override;
 
-    SortedCollection<Item> operator+(int num);
+    SortedCollection<Type> &operator+(Type c);
 
-    SortedCollection<Item> operator<<(int num);
+    SortedCollection<Type> &operator<<(Type c);
 };
 
-template<typename Item>
-SortedCollection<Item>::SortedCollection() {
-    this->capacity = this->INITIAL_CAPACITY;
-    this->curSize = 0;
-    this->elements = make_unique<Item[]>(this->capacity);
-}
+template<class Type>
+SortedCollection<Type>::SortedCollection() : Collection<Type>() {}
 
-template<typename Item>
-SortedCollection<Item>::SortedCollection(int size) {
-    this->capacity = size;
-    this->curSize = 0;
-}
+template<class Type>
+SortedCollection<Type>::SortedCollection(int size) : Collection<Type>(size) {}
 
-template<typename Item>
-SortedCollection<Item>::SortedCollection(Collection<Item> &collection) {
-    this->capacity = collection.capacity;
-    this->curSize = collection.curSize;
-    // Deep copy of the class
-    this->elements = make_unique<Item[]>(this->capacity);
-    for (int i = 0; i < this->curSize; ++i) {
-        this->elements[i] = collection.elements[i];
-    }
-}
+template<class Type>
+SortedCollection<Type>::SortedCollection(SortedCollection<Type> &a) : Collection<Type>(a) {}
 
-template<typename Item>
-void SortedCollection<Item>::add(Item toAdd) {
-    Collection<Item>::add(toAdd);
-    for (int i = this->curSize - 1; i > 0; --i) {
-        if (this->elements[this->curSize] > this->elements[this->curSize - 1]) {
-            this->elements[this->curSize] = this->elements[this->curSize - 1];
-            this->elements[this->curSize - 1] = toAdd;
+template<class Type>
+void SortedCollection<Type>::add(Type e) {
+    Collection<Type>::add(e);
+    for (int i = this->curSize; i > 0; --i) {
+        Type b = this->elements[i - 1];
+        if (e < b) {
+            this->elements[i - 1] = e;
+            this->elements[i] = b;
         }
     }
 }
 
-template<typename Item>
-SortedCollection<Item> SortedCollection<Item>::operator+(int num) {
-    add(num);
+template<class Type>
+SortedCollection<Type> &SortedCollection<Type>::operator+(Type c) {
+    add(c);
     return *this;
 }
 
-template<typename Item>
-SortedCollection<Item> SortedCollection<Item>::operator<<(int num) {
-    add(num);
-    return *this;
+template<class Type>
+SortedCollection<Type> &SortedCollection<Type>::operator<<(Type c) {
+    return *this + c;
 }
 
 #endif //INC_3_4_LAB_SORTED_COLLECTION_SORTEDCOLLECTION_H
